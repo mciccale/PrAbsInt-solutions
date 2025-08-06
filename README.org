@@ -1,0 +1,2 @@
+* Solutions to the exercises of the Principles of Abstract Interpretation book
+
