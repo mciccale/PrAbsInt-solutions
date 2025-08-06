@@ -1,0 +1,82 @@
+\documentclass[10pt,nofonts]{tufte-handout}
+%
+\usepackage[english]{babel}
+\usepackage{etoolbox}
+\usepackage{graphicx}
+\usepackage{relsize}
+\usepackage{natbib}
+%
+\setcounter{secnumdepth}{2}
+%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%
+\usepackage{natbib}
+%
+\usepackage[dvipsnames]{xcolor}
+%
+\definecolor[named]{MyPurple}{cmyk}{0.55,1,0,0.15}
+\definecolor[named]{MyDarkBlue}{cmyk}{1,0.58,0,0.21}
+%
+\usepackage{hyperref}
+\hypersetup{%
+  pdfborder={0 0 0},%
+  pdftitle={Marco Ciccal{\`{e}} --- Solutions to exercises of
+    ``Principles of Abstract Interpretation'' by Cousot (2021)},%
+  colorlinks=true,%
+  linkcolor=MyDarkBlue,%
+  citecolor=MyDarkBlue,%
+  urlcolor=MyDarkBlue,%
+  filecolor=MyDarkBlue,%
+  bookmarksnumbered=true,%
+  linktocpage=true%
+}
+%
+\usepackage[capitalize,noabbrev]{cleveref}
+%
+\crefformat{section}{\S#2#1#3}
+\Crefformat{section}{\S#2#1#3}
+%
+\crefformat{equation}{(#2#1#3)}
+\Crefformat{equation}{(#2#1#3)}
+%
+\usepackage{url}
+%
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[tt=false,osf=true]{libertine}
+\usepackage[libertine]{newtxmath}
+\usepackage[scaled=.85]{beramono}
+\usepackage{BOONDOX-cal}
+%
+\font\bboldfontten=bbold10 at 10pt
+\font\bboldfonteight=bbold10 at 8pt
+\font\bboldfontsix=bbold10 at 6pt
+\renewcommand{\mathbb}[1]
+  {\mathchoice%
+    {\mbox{\bboldfontten#1}}%
+    {\mbox{\bboldfontten#1}}
+    {\mbox{\scriptsize\bboldfonteight#1}}%
+    {\mbox{\tiny\bboldfontsix#1}}}
+%
+\title{Solutions to exercises of ``Principles of Abstract Interpretation'' by~\citet{Cousot21-book}}
+\author{Marco Ciccal{\`{e}}}
+%
+\begin{document}
+%
+\maketitle
+%
+\tableofcontents
+%
+\section{Solutions to exercises in Chapter 3}
+%
+\phantomsection
+\bibliographystyle{tlplike}
+\bibliography{biblio.bib}
+\end{document}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: t
+%%% End:
