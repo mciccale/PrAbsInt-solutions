@@ -1,4 +1,4 @@
-\documentclass[10pt,nofonts]{tufte-handout}
+\documentclass[10pt,justified,nofonts]{tufte-handout}
 %
 \usepackage[english]{babel}
 \usepackage{etoolbox}
@@ -11,6 +11,21 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+%
+\newtheorem{exerciseinner}{Exercise}
+\newenvironment{exercise}[1]{%
+  \IfBlankTF{#1}
+    {\renewcommand{\theexerciseinner}{\unskip}}
+    {\renewcommand\theexerciseinner{#1}}%
+  \exerciseinner
+}{\endexerciseinner}
+%
+\newenvironment{answer}[0]{%
+  \par\pushQED{\qed}%
+  \renewcommand\qedsymbol{$\Box$}% You can change this symbol
+  \noindent\textit{Answer.}%
+  \hspace{.5em}%
+}{\popQED\par}
 %
 \usepackage{natbib}
 %
@@ -50,6 +65,19 @@
 \usepackage[scaled=.85]{beramono}
 \usepackage{BOONDOX-cal}
 %
+\usepackage{listings}
+%
+\definecolor{keywordcolor}{rgb}{0.7, 0.1, 0.1}   % red
+\definecolor{tacticcolor}{rgb}{0.0, 0.1, 0.6}    % blue
+\definecolor{commentcolor}{rgb}{0.4, 0.4, 0.4}   % grey
+\definecolor{symbolcolor}{rgb}{0.0, 0.1, 0.6}    % blue
+\definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
+\definecolor{attributecolor}{rgb}{0.7, 0.1, 0.1} % red
+
+\def\lstlanguagefiles{lstlean.tex}
+% set default language
+\lstset{language=lean,aboveskip=\baselineskip,belowskip=0pt}
+%
 \font\bboldfontten=bbold10 at 10pt
 \font\bboldfonteight=bbold10 at 8pt
 \font\bboldfontsix=bbold10 at 6pt
@@ -60,7 +88,16 @@
     {\mbox{\scriptsize\bboldfonteight#1}}%
     {\mbox{\tiny\bboldfontsix#1}}}
 %
-\title{Solutions to exercises of ``Principles of Abstract Interpretation'' by~\citet{Cousot21-book}}
+\renewcommand{\implies}
+  {\ensuremath{\Rightarrow}}
+\newcommand{\ttrue}
+  {\ensuremath{\textbf{\textsf{tt}}}}
+\newcommand{\ffalse}
+  {\ensuremath{\textbf{\textsf{ff}}}}
+\newcommand{\isDefAs}
+  {\ensuremath{\triangleq}}
+%
+\title{Solutions to exercises of ``Principles of Abstract Interpretation'' by Cousot (2021)}
 \author{Marco Ciccal{\`{e}}}
 %
 \begin{document}
@@ -70,6 +107,111 @@
 \tableofcontents
 %
 \section{Solutions to exercises in Chapter 3}
+%
+\begin{exercise}{3.6}
+  Define the logical operators (negation $\neg$, implication
+  $\implies$, conjunction $\wedge$, disjunction $\vee$) in terms of
+  the Sheffer stroke $\uparrow$.\footnote{Also known as NAND (``not and'').}
+\end{exercise}
+%
+\begin{answer}
+  Let us first recall the definition of the Sheffer stroke $\uparrow$
+  in the form of a truth table:
+  %
+  %
+  
+  \begin{table}
+    \centering
+    \caption{Truth table of the Sheffer stroke $\uparrow$.}
+    \begin{tabular}{c|c|c|c|c}
+      $a$ & $\ttrue$ & $\ttrue$ & $\ffalse$ & $\ffalse$\\\hline
+      $b$ & $\ttrue$ & $\ffalse$ & $\ttrue$ & $\ffalse$\\\hline
+      $a \uparrow b$ & $\ffalse$ & $\ttrue$ & $\ttrue$ & $\ttrue$
+    \end{tabular}
+  \end{table}
+  %
+  %
+  
+  \noindent We can define the logical operators above as
+  follows:\footnote{Note that the Sheffer stroke $\uparrow$ is
+    ``functionally complete,'' i.e., it can be used to express
+    \emph{all} possible truth tables.}
+  %
+  \begin{align*}
+          \neg a &\isDefAs a \uparrow a\tag{$\neg$}\\
+    a \implies b &\isDefAs a \uparrow (b \uparrow b)\tag{$\implies$}\\
+    a   \wedge b &\isDefAs (a \uparrow b) \uparrow (a \uparrow b)\tag{$\wedge$}\\
+    a     \vee b &\isDefAs (a \uparrow a) \uparrow (b \uparrow b)\tag{$\vee$}
+  \end{align*}
+\end{answer}
+%
+\begin{exercise}{3.7}
+  Write a program in the language of your choice that inputs (an
+  encoding of) an expression (with no variables) and returns the value
+  of this expression.
+\end{exercise}
+%
+\begin{answer}
+  In the following $\mathsf{Lean4}$ program, we first define a sum
+  type \texttt{ExpKind} for discriminating between \emph{arithmetic}
+  and \emph{boolean} expressions, together with the
+  \texttt{ExpKind.interp} funtion mapping each constructor with its
+  corresponding $\mathsf{Lean4}$.\footnote{The \texttt{@[reducible]}
+    directive allows us to use the function inside a dependent type.}
+  %
+  Next, we represent expressions with the \texttt{Exp} inductive
+  data type.
+  %
+  Finally, we define the \texttt{Exp.eval} function which
+  accepts: the kind of the expression to evaluate;\footnote{The curly braces notation
+    represents an \emph{implicit} parameter.} the expression itself; and yields the interpretation
+  of evaluating such expression.
+  %
+  \begin{lstlisting}
+  inductive ExpKind where
+    | arith
+    | bool
+  
+  @[reducible]
+  def ExpKind.interp : ExpKind → Type
+    | arith => Int
+    | bool  => Bool
+  
+  inductive Exp : ExpKind → Type where
+    | one  : Exp .arith
+    | sub  : Exp .arith → Exp .arith → Exp .arith
+    | tt   : Exp .bool
+    | ff   : Exp .bool
+    | lt   : Exp .arith → Exp .arith → Exp .bool
+    | nand : Exp .bool → Exp .bool → Exp .bool
+  
+  def Exp.eval {kind: ExpKind} : Exp kind → kind.interp
+    | .one        => 1
+    | .sub  e₁ e₂ => eval e₁ - eval e₂
+    | .tt         => true
+    | .ff         => false
+    | .lt   e₁ e₂ => eval e₁ < eval e₂
+    | .nand e₁ e₂ => !(eval e₁ && eval e₂)
+  \end{lstlisting}
+  %
+  For example:
+  %
+  \begin{lstlisting}
+  #eval Exp.eval (Exp.sub (Exp.sub Exp.one Exp.one) Exp.one)
+  \end{lstlisting}
+  %
+  yields \texttt{-1}; and
+  %
+  \begin{lstlisting}
+  #eval Exp.eval (Exp.nand (Exp.lt Exp.one Exp.one) Exp.tt)
+  \end{lstlisting}
+  %
+  yields \texttt{true}.\marginnote{The source code is available under
+    the \texttt{Lean4Solutions} $\mathsf{Lean4}$ project, in the
+    \href{file:./Lean4Solutions/Lean4Solutions/Chapter3/Exercise3-7.lean}{\tt
+      Exercise3-7.lean} module.}
+  %
+\end{answer}
 %
 \phantomsection
 \bibliographystyle{tlplike}
