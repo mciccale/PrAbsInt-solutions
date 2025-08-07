@@ -1,0 +1,116 @@
+% Core -------------------------------------------------------------------------%
+\usepackage[english]{babel}
+\usepackage{etoolbox}
+\usepackage{graphicx}
+\usepackage{relsize}
+\usepackage{natbib}
+%
+\setcounter{secnumdepth}{2}
+
+% Math -------------------------------------------------------------------------%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%
+\newtheoremstyle{answerstyle} % name
+  {10pt}
+  {10pt}
+  {\normalfont}
+  {}
+  {\bfseries} % Heading font
+  {.}
+  {.5em}
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}} % Heading spec
+\theoremstyle{answerstyle}
+\newtheorem{exerciseinner}{Exercise}
+\newenvironment{exercise}[1]{%
+  \IfBlankTF{#1}%
+    {\renewcommand{\theexerciseinner}{\unskip}}%
+    {\renewcommand\theexerciseinner{#1}}%
+  \exerciseinner%
+}{\endexerciseinner}
+%
+\newenvironment{answer}{%
+  \renewcommand{\qedsymbol}{\ensuremath{\Box}}
+  \proof[Answer]
+}{\endproof}
+
+% Hyperref ---------------------------------------------------------------------%
+\usepackage[dvipsnames]{xcolor}
+%
+\definecolor[named]{MyPurple}{cmyk}{0.55,1,0,0.15}
+\definecolor[named]{MyDarkBlue}{cmyk}{1,0.58,0,0.21}
+\definecolor[named]{keywordcolor}{rgb}{0.7, 0.1, 0.1}
+\definecolor[named]{tacticcolor}{rgb}{0.0, 0.1, 0.6}
+\definecolor[named]{commentcolor}{rgb}{0.4, 0.4, 0.4}
+\definecolor[named]{symbolcolor}{rgb}{0.0, 0.1, 0.6}
+\definecolor[named]{sortcolor}{rgb}{0.1, 0.5, 0.1}
+\definecolor[named]{attributecolor}{rgb}{0.7, 0.1, 0.1}
+%
+\usepackage{hyperref}
+\hypersetup{%
+  pdftitle={Marco Ciccal{\`{e}} --- Solutions to exercises of
+    ``Principles of Abstract Interpretation'' by Cousot (2021)},%
+  colorlinks=true,%
+  linkcolor=MyDarkBlue,%
+  citecolor=MyDarkBlue,%
+  urlcolor=MyDarkBlue,%
+  filecolor=MyDarkBlue,%
+  bookmarksnumbered=true,%
+  linktocpage=true%
+}
+%
+\usepackage[capitalize,noabbrev]{cleveref}
+%
+\crefformat{section}{\S#2#1#3}
+\Crefformat{section}{\S#2#1#3}
+%
+\crefformat{equation}{(#2#1#3)}
+\Crefformat{equation}{(#2#1#3)}
+%
+\usepackage{url}
+
+% Fonts -----------------------------------------------------------------------%
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[tt=false]{libertine}
+\usepackage[libertine]{newtxmath}
+\usepackage[scaled=.85]{beramono}
+\usepackage{BOONDOX-cal}
+%
+\font\bboldfontten=bbold10 at 10pt
+\font\bboldfonteight=bbold10 at 8pt
+\font\bboldfontsix=bbold10 at 6pt
+\renewcommand{\mathbb}[1]
+  {\mathchoice%
+    {\mbox{\bboldfontten#1}}%
+    {\mbox{\bboldfontten#1}}
+    {\mbox{\scriptsize\bboldfonteight#1}}%
+    {\mbox{\tiny\bboldfontsix#1}}}
+
+% Listings --------------------------------------------------------------------%
+\usepackage{listings}
+%
+\def\lstlanguagefiles{lstlean.tex}
+\lstset{language=lean,aboveskip=\baselineskip,belowskip=0pt}
+
+% Macros ----------------------------------------------------------------------%
+\renewcommand{\implies}
+  {\ensuremath{\Rightarrow}}
+\newcommand{\ttrue}
+  {\ensuremath{\textbf{\textsf{tt}}}}
+\newcommand{\ffalse}
+  {\ensuremath{\textbf{\textsf{ff}}}}
+\newcommand{\isDefAs}
+  {\ensuremath{\triangleq}}
+\newcommand{\Lean}
+  {\textsf{Lean4}}
+\newcommand{\intset}
+  {\ensuremath{\mathbb{Z}}}
+\newcommand{\sorry}
+  {\textcolor{red}{Sorry!}}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "solutions"
+%%% End:

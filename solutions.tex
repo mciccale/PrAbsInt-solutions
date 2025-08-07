@@ -1,101 +1,6 @@
 \documentclass[10pt,justified,nofonts]{tufte-handout}
 %
-\usepackage[english]{babel}
-\usepackage{etoolbox}
-\usepackage{graphicx}
-\usepackage{relsize}
-\usepackage{natbib}
-%
-\setcounter{secnumdepth}{2}
-%
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsthm}
-%
-\newtheorem{exerciseinner}{Exercise}
-\newenvironment{exercise}[1]{%
-  \IfBlankTF{#1}
-    {\renewcommand{\theexerciseinner}{\unskip}}
-    {\renewcommand\theexerciseinner{#1}}%
-  \exerciseinner
-}{\endexerciseinner}
-%
-\newenvironment{answer}[0]{%
-  \par\pushQED{\qed}%
-  \renewcommand\qedsymbol{$\Box$}% You can change this symbol
-  \noindent\textit{Answer.}%
-  \hspace{.5em}%
-}{\popQED\par}
-%
-\usepackage{natbib}
-%
-\usepackage[dvipsnames]{xcolor}
-%
-\definecolor[named]{MyPurple}{cmyk}{0.55,1,0,0.15}
-\definecolor[named]{MyDarkBlue}{cmyk}{1,0.58,0,0.21}
-%
-\usepackage{hyperref}
-\hypersetup{%
-  pdfborder={0 0 0},%
-  pdftitle={Marco Ciccal{\`{e}} --- Solutions to exercises of
-    ``Principles of Abstract Interpretation'' by Cousot (2021)},%
-  colorlinks=true,%
-  linkcolor=MyDarkBlue,%
-  citecolor=MyDarkBlue,%
-  urlcolor=MyDarkBlue,%
-  filecolor=MyDarkBlue,%
-  bookmarksnumbered=true,%
-  linktocpage=true%
-}
-%
-\usepackage[capitalize,noabbrev]{cleveref}
-%
-\crefformat{section}{\S#2#1#3}
-\Crefformat{section}{\S#2#1#3}
-%
-\crefformat{equation}{(#2#1#3)}
-\Crefformat{equation}{(#2#1#3)}
-%
-\usepackage{url}
-%
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[tt=false,osf=true]{libertine}
-\usepackage[libertine]{newtxmath}
-\usepackage[scaled=.85]{beramono}
-\usepackage{BOONDOX-cal}
-%
-\usepackage{listings}
-%
-\definecolor{keywordcolor}{rgb}{0.7, 0.1, 0.1}   % red
-\definecolor{tacticcolor}{rgb}{0.0, 0.1, 0.6}    % blue
-\definecolor{commentcolor}{rgb}{0.4, 0.4, 0.4}   % grey
-\definecolor{symbolcolor}{rgb}{0.0, 0.1, 0.6}    % blue
-\definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
-\definecolor{attributecolor}{rgb}{0.7, 0.1, 0.1} % red
-
-\def\lstlanguagefiles{lstlean.tex}
-% set default language
-\lstset{language=lean,aboveskip=\baselineskip,belowskip=0pt}
-%
-\font\bboldfontten=bbold10 at 10pt
-\font\bboldfonteight=bbold10 at 8pt
-\font\bboldfontsix=bbold10 at 6pt
-\renewcommand{\mathbb}[1]
-  {\mathchoice%
-    {\mbox{\bboldfontten#1}}%
-    {\mbox{\bboldfontten#1}}
-    {\mbox{\scriptsize\bboldfonteight#1}}%
-    {\mbox{\tiny\bboldfontsix#1}}}
-%
-\renewcommand{\implies}
-  {\ensuremath{\Rightarrow}}
-\newcommand{\ttrue}
-  {\ensuremath{\textbf{\textsf{tt}}}}
-\newcommand{\ffalse}
-  {\ensuremath{\textbf{\textsf{ff}}}}
-\newcommand{\isDefAs}
-  {\ensuremath{\triangleq}}
+\input{preamble}
 %
 \title{Solutions to exercises of ``Principles of Abstract Interpretation'' by Cousot (2021)}
 \author{Marco Ciccal{\`{e}}}
@@ -106,7 +11,7 @@
 %
 \tableofcontents
 %
-\section{Solutions to exercises in Chapter 3}
+\section{Chapter 3}
 %
 \begin{exercise}{3.6}
   Define the logical operators (negation $\neg$, implication
@@ -133,7 +38,7 @@
   %
   
   \noindent We can define the logical operators above as
-  follows:\footnote{Note that the Sheffer stroke $\uparrow$ is
+  follows:\footnote{Out of curiosity, the Sheffer stroke $\uparrow$ is
     ``functionally complete,'' i.e., it can be used to express
     \emph{all} possible truth tables.}
   %
@@ -152,12 +57,13 @@
 \end{exercise}
 %
 \begin{answer}
-  In the following $\mathsf{Lean4}$ program, we first define a sum
-  type \texttt{ExpKind} for discriminating between \emph{arithmetic}
-  and \emph{boolean} expressions, together with the
+  In the following \Lean\ program, we first define a sum type
+  \texttt{ExpKind} for discriminating between \emph{arithmetic} and
+  \emph{boolean} expressions, together with the
   \texttt{ExpKind.interp} funtion mapping each constructor with its
-  corresponding $\mathsf{Lean4}$.\footnote{The \texttt{@[reducible]}
-    directive allows us to use the function inside a dependent type.}
+  corresponding \Lean.\footnote{The \texttt{@[reducible]} directive
+    allows us to use the function inside the predicate of a dependent
+    type.}
   %
   Next, we represent expressions with the \texttt{Exp} inductive
   data type.
@@ -194,6 +100,8 @@
     | .nand e₁ e₂ => !(eval e₁ && eval e₂)
   \end{lstlisting}
   %
+  %
+  
   For example:
   %
   \begin{lstlisting}
@@ -207,10 +115,108 @@
   \end{lstlisting}
   %
   yields \texttt{true}.\marginnote{The source code is available under
-    the \texttt{Lean4Solutions} $\mathsf{Lean4}$ project, in the
+    the \texttt{Lean4Solutions} \Lean\ project, in the
     \href{file:./Lean4Solutions/Lean4Solutions/Chapter3/Exercise3-7.lean}{\tt
       Exercise3-7.lean} module.}
   %
+\end{answer}
+%
+\begin{exercise}{3.8}
+  Prove that any integer $z \in \intset$ has a finite denotation in
+  the syntax $\mathbb{A}$ of arithmetic expressions.
+\end{exercise}
+%
+\begin{proof}
+  The proof proceeds by (complete) induction over $\intset$.
+  %
+  \begin{itemize}
+  \item Base case ($z = 0$).
+    %
+    The (finite) expression \texttt{1 - 1} denotes the integer $0$
+    under the semantics of arithmetic expressions, i.e.,
+    $\mathbcal{A}\mathbb{[}\texttt{E}\mathbb{]} = 0$.
+  %
+  \item Inductive step ($z \leqslant 0$).
+    %
+    Assume that for $z \leqslant 0$ there exists an expression
+    \texttt{E}$_z$
+    s.t.~$\mathbcal{A}\mathbb{[}\texttt{E}_z\mathbb{]} = z$.
+    %
+    We define the expression
+    \texttt{E}$_{z-1} \isDefAs \texttt{E}_z\texttt{ - 1}$,
+    whose semantics is:
+    %
+    \begin{align*}
+      \mathbcal{A}\mathbb{[}\texttt{E}_{z-1}\mathbb{]}
+      &= \mathbcal{A}\mathbb{[}\texttt{E}_z\mathbb{]} - \mathbcal{A}\mathbb{[}\texttt{1}\mathbb{]}\\
+      &= z - 1
+    \end{align*}
+  %
+  \item Inductive step ($z \geqslant 0$).
+    %
+    Assume that for $z \geqslant 0$ there exists an expression
+    \texttt{E}$_z$
+    s.t.~$\mathbcal{A}\mathbb{[}\texttt{E}_z\mathbb{]} = z$.
+    %
+    We define the expression
+    \texttt{E}$_{z+1} \isDefAs \texttt{E}_z\texttt{ - ((1 - 1) - 1)}$,
+    whose semantics is:
+    %
+    \begin{align*}
+      \mathbcal{A}\mathbb{[}\texttt{E}_{z+1}\mathbb{]}
+      &= \mathbcal{A}\mathbb{[}\texttt{E}_z\mathbb{]} - \mathbcal{A}\mathbb{[}\texttt{((1 - 1) - 1)}\mathbb{]}\\
+      &= \mathbcal{A}\mathbb{[}\texttt{E}_z\mathbb{]} - (\mathbcal{A}\mathbb{[}\texttt{(1 - 1)}\mathbb{]} - \mathbcal{A}\mathbb{[}\texttt{1}\mathbb{]})\\
+      &= \mathbcal{A}\mathbb{[}\texttt{E}_z\mathbb{]} - ((\mathbcal{A}\mathbb{[}\texttt{1}\mathbb{]} - \mathbcal{A}\mathbb{[}\texttt{1}\mathbb{]}) - \mathbcal{A}\mathbb{[}\texttt{1}\mathbb{]})\\
+      &= z - ((1 - 1) - 1)\\
+      &= z + 1\qedhere
+    \end{align*}
+  \end{itemize}
+\end{proof}
+%
+\begin{exercise}{3.9}
+  Let $\iota \in \mathbb{V} \to \mathbb{V}$ be an isomorphism (i.e., a
+  renaming of variables).
+  %
+  Define $\iota\mathbb{[}\texttt{E}\mathbb{]}$ to be the expression obtained
+  by renaming of the variables \texttt{x} of \texttt{E} to $\iota(x)$.
+  %
+  Prove that
+  $\mathbcal{S}\mathbb{[}\texttt{E}\mathbb{]}\rho =
+  \mathbcal{S}\mathbb{[}\iota\mathbb{[}\texttt{E}\mathbb{]}\mathbb{]}(\texttt{x}
+  \in \mathbb{V} \mapsto \rho(\iota(\texttt{x})))$.
+  %
+  This show, intuitively, that the renaming of variables does not
+  change the semantics of expressions.
+\end{exercise}
+%
+\begin{answer}
+  We first define the $\iota\mathbb{[}\texttt{E}\mathbb{]}$
+  isomorphism as follows:
+  %
+  \begin{align*}
+    \iota\mathbb{[}\texttt{1}\mathbb{]} &\isDefAs \texttt{1}\\
+    \iota\mathbb{[}\texttt{x}\mathbb{]} &\isDefAs \iota(\texttt{x})\\
+    \iota\mathbb{[}\texttt{A}_1\texttt{ - }\texttt{A}_2\mathbb{]} &\isDefAs \iota\mathbb{[}\texttt{A}_1\mathbb{]}\texttt{ - }\iota\mathbb{[}\texttt{A}_2\mathbb{]}\\
+    \iota\mathbb{[}\texttt{A}_1\texttt{ < }\texttt{A}_2\mathbb{]} &\isDefAs \iota\mathbb{[}\texttt{A}_1\mathbb{]}\texttt{ < }\iota\mathbb{[}\texttt{A}_2\mathbb{]}\\
+    \iota\mathbb{[}\texttt{B}_1\texttt{ nand }\texttt{B}_2\mathbb{]} &\isDefAs \iota\mathbb{[}\texttt{B}_1\mathbb{]}\texttt{ nand }\iota\mathbb{[}\texttt{B}_2\mathbb{]}
+  \end{align*}
+  %
+  %
+  
+  Next, let us prove that the semantics of expressions is not altered by
+  variable renaming.
+  %
+  \begin{proof}
+    We proceed by structural induction on the size of the expression \texttt{E}.
+    %
+    \begin{itemize}
+    \item Base case (\texttt{E} $\equiv$ \texttt{1}).
+    \item Base case (\texttt{E} $\equiv$ \texttt{x}).
+    \item Inductive step (\texttt{E} $\equiv$ \texttt{A}$_1$\texttt{ - A}$_2$).
+    \item Inductive step (\texttt{E} $\equiv$ \texttt{A}$_1$\texttt{ < A}$_2$).
+    \item Inductive step (\texttt{E} $\equiv$ \texttt{B}$_1$\texttt{ nand B}$_2$).
+    \end{itemize}
+  \end{proof}
 \end{answer}
 %
 \phantomsection
