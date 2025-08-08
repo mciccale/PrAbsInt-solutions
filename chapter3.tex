@@ -127,7 +127,7 @@
 \end{exercise}
 %
 \begin{proof}
-  The proof proceeds by (complete) induction over $\intset$.
+  The proof proceeds by induction over $\intset$.
   %
   \begin{itemize}
   \item Base case ($z = 0$).
@@ -136,11 +136,10 @@
     under the semantics of arithmetic expressions, i.e.,
     $\asem{\texttt{E}} = 0$.
   %
-  \item Inductive step ($z \leqslant 0$).
+  \item Inductive step (with $z \in \intset^{-}$).
     %
-    Assume that for $z \leqslant 0$ there exists an expression
-    \texttt{E}$_z$
-    s.t.~$\mathbcal{A}\mathbb{[}\texttt{E}_z\mathbb{]} = z$.
+    Assume that there exists an expression \texttt{E}$_z$
+    s.t.~$\asem{\texttt{E}_z} = z$.
     %
     We define the expression
     \texttt{E}$_{z-1} \isDefAs \texttt{E}_z\texttt{ - 1}$,
@@ -152,10 +151,9 @@
       &= z - 1
     \end{align*}
   %
-  \item Inductive step ($z \geqslant 0$).
+  \item Inductive step (with $z \in \intset^{+}$).
     %
-    Assume that for $z \geqslant 0$ there exists an expression
-    \texttt{E}$_z$
+    Assume that there exists an expression \texttt{E}$_z$
     s.t.~$\asem{\texttt{E}_z} = z$.
     %
     We define the expression
