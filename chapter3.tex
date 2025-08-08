@@ -1,0 +1,223 @@
+% Chapter 3 macros ------------------------------------------------------------%
+\newcommand{\sem}[1]
+  {\ensuremath{\mathbcal{S}\llbracket#1\rrbracket}}
+%
+\newcommand{\asem}[1]
+  {\ensuremath{\mathbcal{A}\llbracket#1\rrbracket}}
+%
+\newcommand{\bsem}[1]
+  {\ensuremath{\mathbcal{B}\llbracket#1\rrbracket}}
+%
+\newcommand{\vren}[1]
+  {\ensuremath{\iota\llbracket#1\rrbracket}}
+
+\section{Chapter 3}
+%
+\begin{exercise}{3.6}
+  Define the logical operators (negation $\neg$, implication
+  $\implies$, conjunction $\wedge$, disjunction $\vee$) in terms of
+  the Sheffer stroke $\uparrow$.\footnote{Also known as NAND (``not and'').}
+\end{exercise}
+%
+\begin{answer}
+  Let us first recall the definition of the Sheffer stroke $\uparrow$
+  in the form of a truth table:
+  %
+  %
+  
+  \begin{table}
+    \centering
+    \caption{Truth table of the Sheffer stroke $\uparrow$.}
+    \begin{tabular}{c|c|c|c|c}
+      $a$ & $\ttrue$ & $\ttrue$ & $\ffalse$ & $\ffalse$\\\hline
+      $b$ & $\ttrue$ & $\ffalse$ & $\ttrue$ & $\ffalse$\\\hline
+      $a \uparrow b$ & $\ffalse$ & $\ttrue$ & $\ttrue$ & $\ttrue$
+    \end{tabular}
+  \end{table}
+  %
+  %
+  
+  \noindent We can define the logical operators above as
+  follows:\footnote{Out of curiosity, the Sheffer stroke $\uparrow$ is
+    ``functionally complete,'' i.e., it can be used to express
+    \emph{all} possible truth tables.}
+  %
+  \begin{align*}
+          \neg a &\isDefAs a \uparrow a\tag{$\neg$}\\
+    a \implies b &\isDefAs a \uparrow (b \uparrow b)\tag{$\implies$}\\
+    a   \wedge b &\isDefAs (a \uparrow b) \uparrow (a \uparrow b)\tag{$\wedge$}\\
+    a     \vee b &\isDefAs (a \uparrow a) \uparrow (b \uparrow b)\tag{$\vee$}
+  \end{align*}
+\end{answer}
+%
+\begin{exercise}{3.7}
+  Write a program in the language of your choice that inputs (an
+  encoding of) an expression (with no variables) and returns the value
+  of this expression.
+\end{exercise}
+%
+\begin{answer}
+  In the following \Lean\ program, we first define a sum type
+  \texttt{ExpKind} for discriminating between \emph{arithmetic} and
+  \emph{boolean} expressions, together with the
+  \texttt{ExpKind.interp} funtion mapping each constructor with its
+  corresponding \Lean.\footnote{The \texttt{@[reducible]} directive
+    allows us to use the function inside the predicate of a dependent
+    type.}
+  %
+  Next, we represent expressions with the \texttt{Exp} inductive
+  data type.
+  %
+  Finally, we define the \texttt{Exp.eval} function which
+  accepts: the kind of the expression to evaluate;\footnote{The curly braces notation
+    represents an \emph{implicit} parameter.} the expression itself; and yields the interpretation
+  of evaluating such expression.
+  %
+  \begin{lstlisting}
+  inductive ExpKind where
+    | arith
+    | bool
+  
+  @[reducible]
+  def ExpKind.interp : ExpKind → Type
+    | arith => Int
+    | bool  => Bool
+  
+  inductive Exp : ExpKind → Type where
+    | one  : Exp .arith
+    | sub  : Exp .arith → Exp .arith → Exp .arith
+    | tt   : Exp .bool
+    | ff   : Exp .bool
+    | lt   : Exp .arith → Exp .arith → Exp .bool
+    | nand : Exp .bool → Exp .bool → Exp .bool
+  
+  def Exp.eval {kind: ExpKind} : Exp kind → kind.interp
+    | .one        => 1
+    | .sub  e₁ e₂ => eval e₁ - eval e₂
+    | .tt         => true
+    | .ff         => false
+    | .lt   e₁ e₂ => eval e₁ < eval e₂
+    | .nand e₁ e₂ => !(eval e₁ && eval e₂)
+  \end{lstlisting}
+  %
+  %
+  
+  For example:
+  %
+  \begin{lstlisting}
+  #eval Exp.eval (Exp.sub (Exp.sub Exp.one Exp.one) Exp.one)
+  \end{lstlisting}
+  %
+  yields \texttt{-1}; and
+  %
+  \begin{lstlisting}
+  #eval Exp.eval (Exp.nand (Exp.lt Exp.one Exp.one) Exp.tt)
+  \end{lstlisting}
+  %
+  yields \texttt{true}.\marginnote{The source code is available under
+    the \texttt{Lean4Solutions} \Lean\ project, in the
+    \href{file:./Lean4Solutions/Lean4Solutions/Chapter3/Exercise3-7.lean}{\tt
+      Exercise3-7.lean} module.}
+  %
+\end{answer}
+%
+\begin{exercise}{3.8}
+  Prove that any integer $z \in \intset$ has a finite denotation in
+  the syntax $\mathbb{A}$ of arithmetic expressions.
+\end{exercise}
+%
+\begin{proof}
+  The proof proceeds by (complete) induction over $\intset$.
+  %
+  \begin{itemize}
+  \item Base case ($z = 0$).
+    %
+    The (finite) expression \texttt{1 - 1} denotes the integer $0$
+    under the semantics of arithmetic expressions, i.e.,
+    $\asem{\texttt{E}} = 0$.
+  %
+  \item Inductive step ($z \leqslant 0$).
+    %
+    Assume that for $z \leqslant 0$ there exists an expression
+    \texttt{E}$_z$
+    s.t.~$\mathbcal{A}\mathbb{[}\texttt{E}_z\mathbb{]} = z$.
+    %
+    We define the expression
+    \texttt{E}$_{z-1} \isDefAs \texttt{E}_z\texttt{ - 1}$,
+    whose semantics is:
+    %
+    \begin{align*}
+      \asem{\texttt{E}_{z-1}}
+      &= \asem{\texttt{E}_z} - \asem{\texttt{1}}\\
+      &= z - 1
+    \end{align*}
+  %
+  \item Inductive step ($z \geqslant 0$).
+    %
+    Assume that for $z \geqslant 0$ there exists an expression
+    \texttt{E}$_z$
+    s.t.~$\asem{\texttt{E}_z} = z$.
+    %
+    We define the expression
+    \texttt{E}$_{z+1} \isDefAs \texttt{E}_z\texttt{ - ((1 - 1) - 1)}$,
+    whose semantics is:
+    %
+    \begin{align*}
+      \asem{\texttt{E}_{z+1}}
+      &= \asem{\texttt{E}_z} - \asem{\texttt{((1 - 1) - 1)}}\\
+      &= \asem{\texttt{E}_z} - (\asem{\texttt{(1 - 1)}} - \asem{\texttt{1}})\\
+      &= \asem{\texttt{E}_z} - ((\asem{\texttt{1}} - \asem{\texttt{1}}) - \asem{\texttt{1}})\\
+      &= z - ((1 - 1) - 1)\\
+      &= z + 1\qedhere
+    \end{align*}
+  \end{itemize}
+\end{proof}
+%
+\begin{exercise}{3.9}
+  Let $\iota \in \mathbb{V} \to \mathbb{V}$ be an isomorphism (i.e., a
+  renaming of variables).
+  %
+  Define $\vren{\texttt{E}}$ to be the expression obtained by renaming
+  of the variables \texttt{x} of \texttt{E} to $\iota(x)$.
+  %
+  Prove that
+  $\sem{\texttt{E}}\rho = \sem{\vren{\texttt{E}}}(\texttt{x} \in
+  \mathbb{V} \mapsto \rho(\iota(\texttt{x})))$.
+  %
+  This show, intuitively, that the renaming of variables does not
+  change the semantics of expressions.
+\end{exercise}
+%
+\begin{answer}
+  We first define the $\vren{\texttt{E}}$ isomorphism as follows:
+  %
+  \begin{align*}
+    \vren{\texttt{1}} &\isDefAs \texttt{1}\\
+    \vren{\texttt{x}} &\isDefAs \iota(\texttt{x})\\
+    \vren{\texttt{A}_1\texttt{ - }\texttt{A}_2} &\isDefAs \vren{\texttt{A}_1}\texttt{ - }\vren{\texttt{A}_2}\\
+    \vren{\texttt{A}_1\texttt{ < }\texttt{A}_2} &\isDefAs \vren{\texttt{A}_1}\texttt{ < }\vren{\texttt{A}_2}\\
+    \vren{\texttt{B}_1\texttt{ nand }\texttt{B}_2} &\isDefAs \vren{\texttt{B}_1}\texttt{ nand }\vren{\texttt{B}_2}\\
+  \end{align*}
+  %
+  %
+  
+  Next, let us prove that the semantics of expressions is not altered by
+  variable renaming.
+  %
+  \begin{proof}
+    We proceed by structural induction on the size of the expression \texttt{E}.
+    %
+    \begin{itemize}
+    \item Base case (\texttt{E} $\equiv$ \texttt{1}).
+    \item Base case (\texttt{E} $\equiv$ \texttt{x}).
+    \item Inductive step (\texttt{E} $\equiv$ \texttt{A}$_1$\texttt{ - A}$_2$).
+    \item Inductive step (\texttt{E} $\equiv$ \texttt{A}$_1$\texttt{ < A}$_2$).
+    \item Inductive step (\texttt{E} $\equiv$ \texttt{B}$_1$\texttt{ nand B}$_2$).
+    \end{itemize}
+  \end{proof}
+\end{answer}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "solutions"
+%%% End:

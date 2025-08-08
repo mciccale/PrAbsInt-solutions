@@ -12,15 +12,15 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 %
-\newtheoremstyle{answerstyle} % name
+\newtheoremstyle{answerstyle}
   {10pt}
   {10pt}
   {\normalfont}
   {}
-  {\bfseries} % Heading font
+  {\bfseries}
   {.}
   {.5em}
-  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}} % Heading spec
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
 \theoremstyle{answerstyle}
 \newtheorem{exerciseinner}{Exercise}
 \newenvironment{exercise}[1]{%
@@ -31,8 +31,8 @@
 }{\endexerciseinner}
 %
 \newenvironment{answer}{%
-  \renewcommand{\qedsymbol}{\ensuremath{\Box}}
-  \proof[Answer]
+  \renewcommand{\qedsymbol}{\ensuremath{\Box}}%
+  \proof[Answer]%
 }{\endproof}
 
 % Hyperref ---------------------------------------------------------------------%
@@ -93,22 +93,6 @@
 %
 \def\lstlanguagefiles{lstlean.tex}
 \lstset{language=lean,aboveskip=\baselineskip,belowskip=0pt}
-
-% Macros ----------------------------------------------------------------------%
-\renewcommand{\implies}
-  {\ensuremath{\Rightarrow}}
-\newcommand{\ttrue}
-  {\ensuremath{\textbf{\textsf{tt}}}}
-\newcommand{\ffalse}
-  {\ensuremath{\textbf{\textsf{ff}}}}
-\newcommand{\isDefAs}
-  {\ensuremath{\triangleq}}
-\newcommand{\Lean}
-  {\textsf{Lean4}}
-\newcommand{\intset}
-  {\ensuremath{\mathbb{Z}}}
-\newcommand{\sorry}
-  {\textcolor{red}{Sorry!}}
 
 %%% Local Variables:
 %%% mode: LaTeX
