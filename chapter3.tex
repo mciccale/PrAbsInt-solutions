@@ -11,7 +11,7 @@
 \newcommand{\vren}[1]
   {\ensuremath{\iota\llbracket#1\rrbracket}}
 
-\section{Chapter 3}
+\section*{Chapter 3}
 %
 \begin{exercise}{3.6}
   Define the logical operators (negation $\neg$, implication
@@ -134,7 +134,7 @@
     %
     The (finite) expression \texttt{1 - 1} denotes the integer $0$
     under the semantics of arithmetic expressions, i.e.,
-    $\asem{\texttt{E}} = 0$.
+    $\asem{\texttt{1 - 1}} = 0$.
   %
   \item Inductive step (with $z \in \intset^{-}$).
     %
@@ -176,13 +176,13 @@
   renaming of variables).
   %
   Define $\vren{\texttt{E}}$ to be the expression obtained by renaming
-  of the variables \texttt{x} of \texttt{E} to $\iota(x)$.
+  of the variables \texttt{x} of \texttt{E} to $\iota(\texttt{x})$.
   %
   Prove that
   $\sem{\texttt{E}}\rho = \sem{\vren{\texttt{E}}}(\texttt{x} \in
   \mathbb{V} \mapsto \rho(\iota(\texttt{x})))$.
   %
-  This show, intuitively, that the renaming of variables does not
+  This shows, intuitively, that the renaming of variables does not
   change the semantics of expressions.
 \end{exercise}
 %
@@ -202,15 +202,154 @@
   Next, let us prove that the semantics of expressions is not altered by
   variable renaming.
   %
-  \begin{proof}
+  \begin{proof}\renewcommand{\qedsymbol}{}
     We proceed by structural induction on the size of the expression \texttt{E}.
     %
     \begin{itemize}
-    \item Base case (\texttt{E} $\equiv$ \texttt{1}).
-    \item Base case (\texttt{E} $\equiv$ \texttt{x}).
-    \item Inductive step (\texttt{E} $\equiv$ \texttt{A}$_1$\texttt{ - A}$_2$).
-    \item Inductive step (\texttt{E} $\equiv$ \texttt{A}$_1$\texttt{ < A}$_2$).
-    \item Inductive step (\texttt{E} $\equiv$ \texttt{B}$_1$\texttt{ nand B}$_2$).
+    \item \underline{Base case} (\texttt{E} $\equiv$ \texttt{1}).
+      %
+      $\sem{\texttt{1}}\rho = 1$, and $\vren{\texttt{1}} = 1$.
+      %
+      Thus,
+      %
+      \[
+        \sem{\vren{\texttt{1}}}(\texttt{x} \in \mathbb{V} \mapsto
+        \rho(\iota(\texttt{x}))) = 1
+      \]
+      %
+      holds trivially.
+    %
+    \item \underline{Base case} (\texttt{E} $\equiv$ \texttt{x}).
+      %
+      $\sem{\texttt{x}}\rho = \rho(\texttt{x})$, and
+      $\vren{\texttt{x}} = \iota(\texttt{x})$.
+      %
+      Then,
+      %
+      \[
+        \sem{\vren{\texttt{x}}}(\texttt{x} \in \mathbb{V} \mapsto
+        \rho(\iota(\texttt{x}))) = \rho(x)
+      \]
+      %
+      holds since, by the definition of $\iota$,
+      %
+      \[
+        \rho(\texttt{x}) = (\texttt{x} \in \mathbb{V} \mapsto
+        \rho(\iota(\texttt{x})))(\iota(\texttt{x})).
+      \]
+    %
+    \item \underline{Inductive step} (\texttt{E} $\equiv$
+      \texttt{A}$_1$\texttt{ - A}$_2$).
+      %
+      $\sem{\texttt{A}_1\texttt{ - A}_2}\rho = \sem{\texttt{A}_1}\rho
+      - \sem{\texttt{A}_2}\rho$.
+      %
+      By induction on the size of \texttt{E}, we assume
+      %
+      \begin{equation}
+        \sem{\texttt{A}_1}\rho = \sem{\vren{\texttt{A}_1}}(\texttt{x} \in
+        \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+        %
+        \label{eq:ex3.9:ih1}
+        \tag{IH1}
+      \end{equation}
+      %
+      \begin{equation}
+        \sem{\texttt{A}_2}\rho = \sem{\vren{\texttt{A}_2}}(\texttt{x} \in
+        \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+        %
+        \label{eq:ex3.9:ih2}
+        \tag{IH2}
+      \end{equation}
+      %
+      And, by the definition of $\sem{\cdot}$, and~\cref{eq:ex3.9:ih1}
+      and~\cref{eq:ex3.9:ih2},
+      %
+      \begin{align*}
+        \sem{\vren{\texttt{A}_1}}(\texttt{x} \in \mathbb{V} \mapsto
+        \rho(\iota(\texttt{x})))~-~&\sem{\vren{\texttt{A}_1}}(\texttt{x}
+        \in \mathbb{V} \mapsto \rho(\iota(\texttt{x})))\\
+        %
+        &= \sem{\texttt{A}_1\texttt{ - A}_2}(\texttt{x}
+        \in \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+      \end{align*}
+      %
+      holds.
+      %
+    \item \underline{Inductive step} (\texttt{E} $\equiv$
+      \texttt{A}$_1$\texttt{ < A}$_2$).
+      %
+      $\sem{\texttt{A}_1\texttt{ < A}_2}\rho = \sem{\texttt{A}_1}\rho
+      < \sem{\texttt{A}_2}\rho$.
+      %
+      By induction on the size of \texttt{E}, we assume
+      %
+      \begin{equation}
+        \sem{\texttt{A}_1}\rho = \sem{\vren{\texttt{A}_1}}(\texttt{x} \in
+        \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+        %
+        \label{eq:ex3.9:ih3}
+        \tag{IH3}
+      \end{equation}
+      %
+      \begin{equation}
+        \sem{\texttt{A}_2}\rho = \sem{\vren{\texttt{A}_2}}(\texttt{x} \in
+        \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+        %
+        \label{eq:ex3.9:ih4}
+        \tag{IH4}
+      \end{equation}
+      %
+      And, by the definition of $\sem{\cdot}$, and~\cref{eq:ex3.9:ih3}
+      and~\cref{eq:ex3.9:ih4},
+      %
+      \begin{align*}
+        \sem{\vren{\texttt{A}_1}}(\texttt{x} \in \mathbb{V} \mapsto
+        \rho(\iota(\texttt{x})))~<~&\sem{\vren{\texttt{A}_1}}(\texttt{x}
+        \in \mathbb{V} \mapsto \rho(\iota(\texttt{x})))\\
+        %
+        &= \sem{\texttt{A}_1\texttt{ < A}_2}(\texttt{x}
+        \in \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+      \end{align*}
+      %
+      holds.
+    \item \underline{Inductive step} (\texttt{E} $\equiv$
+      \texttt{B}$_1$\texttt{ nand B}$_2$).
+      %
+      $\sem{\texttt{A}_1\texttt{ nand A}_2}\rho = \sem{\texttt{A}_1}\rho
+      \uparrow \sem{\texttt{A}_2}\rho$.
+      %
+      By induction on the size of \texttt{E}, we assume
+      %
+      \begin{equation}
+        \sem{\texttt{A}_1}\rho = \sem{\vren{\texttt{A}_1}}(\texttt{x} \in
+        \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+        %
+        \label{eq:ex3.9:ih5}
+        \tag{IH5}
+      \end{equation}
+      %
+      \begin{equation}
+        \sem{\texttt{A}_2}\rho = \sem{\vren{\texttt{A}_2}}(\texttt{x} \in
+        \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+        %
+        \label{eq:ex3.9:ih6}
+        \tag{IH6}
+      \end{equation}
+      %
+      And, by the definition of $\sem{\cdot}$, and~\cref{eq:ex3.9:ih5}
+      and~\cref{eq:ex3.9:ih6},
+      %
+      \begin{align*}
+        \sem{\vren{\texttt{A}_1}}(\texttt{x} \in \mathbb{V} \mapsto
+        \rho(\iota(\texttt{x})))~\uparrow~&\sem{\vren{\texttt{A}_1}}(\texttt{x}
+        \in \mathbb{V} \mapsto \rho(\iota(\texttt{x})))\\
+        %
+        &= \sem{\texttt{A}_1\texttt{ nand A}_2}(\texttt{x}
+        \in \mathbb{V} \mapsto \rho(\iota(\texttt{x})))
+      \end{align*}
+      %
+      holds.  \qedhere
     \end{itemize}
   \end{proof}
 \end{answer}
